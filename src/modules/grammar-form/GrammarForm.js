@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Icon, Input, Button, Radio, Row, Col } from 'antd';
+import { Form, Icon, Input, Button, Radio, Row, Col, Tag } from 'antd';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -25,17 +26,69 @@ class InputForm extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        console.log(values);
       }
     });
   }
+
+  addNonTerminal = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+
+        let alreadyContains = false;
+
+        this.state.nonTerminalList.map((nt) => {
+          if (values.nonTerminal.toUpperCase().indexOf(nt) != -1) {
+            alreadyContains = true;
+          }
+        });
+
+        if (!alreadyContains) {
+          this.setState({ nonTerminalList: [...this.state.nonTerminalList, values.nonTerminal.toUpperCase()] });
+        }
+
+      }
+    });
+  }
+
+  delNonTerminal = (index) => {
+    let newList = this.state.nonTerminalList;
+    newList.splice(index, 1);
+    this.setState({ nonTerminalList: newList })
+  }
+
+  handleNonTerminal = (rule, value, callback) => {
+    const { getFieldValue } = this.props.form
+    const { setFieldsValue } = this.props.form
+    let nonTerminalVar = getFieldValue('nonTerminal');
+
+
+
+    if (/[^a-zA-Z]/.test(nonTerminalVar)) {
+      callback('Non-terminal cannot contais numbers or special characters!')
+    } else {
+      if (nonTerminalVar !== undefined) {
+
+        if (nonTerminalVar.length > 0) {
+          nonTerminalVar = nonTerminalVar.charAt(0);
+        }
+
+        setFieldsValue({
+          nonTerminal: nonTerminalVar.toUpperCase(),
+        });
+      }
+    }
+
+    callback()
+  }
+
   render() {
     const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
 
     // Only show error after a field is touched.
 
     const nonTerminals = isFieldTouched('nonTerminals') && getFieldError('nonTerminals');
-    const nonTerminal = isFieldTouched('nonTerminal') && getFieldError('nonTerminal');
     const terminals = isFieldTouched('Terminals') && getFieldError('Terminals');
 
 
@@ -52,34 +105,51 @@ class InputForm extends Component {
             <Radio value={'Yes'}>Yes</Radio>
             <Radio value={'No'}>No</Radio>
           </RadioGroup>
-          <FormItem
-            validateStatus={nonTerminals ? 'error' : ''}
-            help={nonTerminals || ''}>
-
+          <FormItem>
             <Row>
-              <Col md='5'>
-                {getFieldDecorator('nonTerminal', {
-                  rules: [{ required: true, message: 'Please input your a non-terminal!' }],
-                })(
-                  <Input
-                    prefix={<Icon type="pushpin-o" />}
-
-                    placeholder="non-terminal" />
-                )}
+              <Col md={5}>
+                <FormItem>
+                  {getFieldDecorator('nonTerminal', {
+                    rules: [{ validator: this.handleNonTerminal }],
+                  })(
+                    <Input
+                      prefix={<Icon type="pushpin-o" />}
+                      onChange={this.handleValueChange}
+                      placeholder="non-terminal" />
+                  )}
+                </FormItem>
               </Col>
-              <Col md='5'>
+              <Col md={2}>
                 <Button
                   type="primary"
                   htmlType="submit"
-                  disabled={hasErrors(getFieldsError())}
-                >
+                  onClick={this.addNonTerminal}
+                  disabled={hasErrors(getFieldsError())}>
                   Add
-            </Button>
+                </Button>
               </Col>
+              <Col md={5}>
+                {this.state.nonTerminalList.map((nt, index) =>
+                  <Tag
+                    key={index}
+                    color="magenta"
+                    onClick={() => this.delNonTerminal(index)}
+                    name={index}>
+                    {nt}
+                  </Tag>)}
+              </Col>
+
+
             </Row>
+
+
           </FormItem>
+
         </Form>
-        
+
+
+
+
         {/* <Form layout="inline" onSubmit={this.handleSubmit}>
           <FormItem
             validateStatus={userNameError ? 'error' : ''}
@@ -111,7 +181,7 @@ class InputForm extends Component {
           </Button>
           </FormItem>
         </Form> */}
-      </div>
+      </div >
     );
   }
 }
