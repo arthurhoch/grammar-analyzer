@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Icon, Input, Button, Radio, Row, Col, Tag } from 'antd';
+import { Form, Icon, Input, Radio, Row, Col, Tag } from 'antd';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
+const { Search, TextArea } = Input;
 
 class InputForm extends Component {
 
@@ -20,8 +16,8 @@ class InputForm extends Component {
 
 
   componentDidMount() {
-    this.props.form.validateFields();
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -31,156 +27,157 @@ class InputForm extends Component {
     });
   }
 
-  addNonTerminal = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-
-        let alreadyContains = false;
-
-        this.state.nonTerminalList.map((nt) => {
-          if (values.nonTerminal.toUpperCase().indexOf(nt) != -1) {
-            alreadyContains = true;
-          }
+  //NonTerminal
+  addNonTerminal = (nt) => {
+    if (nt !== undefined && nt !== null && nt !== '') {
+      let alreadyContains = this.state.nonTerminalList.indexOf(nt) > -1;
+      if (!alreadyContains) {
+        this.setState({
+          nonTerminalList: [...this.state.nonTerminalList, nt]
         });
-
-        if (!alreadyContains) {
-          this.setState({ nonTerminalList: [...this.state.nonTerminalList, values.nonTerminal.toUpperCase()] });
-        }
-
       }
+    }
+    this.setState({
+      nonTerminal: ''
     });
   }
 
   delNonTerminal = (index) => {
     let newList = this.state.nonTerminalList;
-    newList.splice(index, 1);
-    this.setState({ nonTerminalList: newList })
+    let nt = newList.splice(index, 1);
+    this.setState({
+      nonTerminalList: newList,
+      nonTerminal: nt
+    });
   }
 
-  handleNonTerminal = (rule, value, callback) => {
-    const { getFieldValue } = this.props.form
-    const { setFieldsValue } = this.props.form
-    let nonTerminalVar = getFieldValue('nonTerminal');
+  nonTerminalOnChange = (e) => {
+    e.preventDefault();
+    let value = e.target.value;
+    if (!/[^a-zA-Z]/.test(value)) {
+      this.setState({
+        nonTerminal: value.charAt(value.length - 1).toUpperCase()
+      });
+    }
+  }
 
-
-
-    if (/[^a-zA-Z]/.test(nonTerminalVar)) {
-      callback('Non-terminal cannot contais numbers or special characters!')
-    } else {
-      if (nonTerminalVar !== undefined) {
-
-        if (nonTerminalVar.length > 0) {
-          nonTerminalVar = nonTerminalVar.charAt(0);
-        }
-
-        setFieldsValue({
-          nonTerminal: nonTerminalVar.toUpperCase(),
+  //Terminal
+  addTerminal = (t) => {
+    if (t !== undefined && t !== null && t !== '') {
+      let alreadyContains = this.state.terminalList.indexOf(t) > -1;
+      if (!alreadyContains) {
+        this.setState({
+          terminalList: [...this.state.terminalList, t]
         });
       }
     }
+    this.setState({
+      terminal: ''
+    });
+  }
 
-    callback()
+  delTerminal = (index) => {
+    let newList = this.state.terminalList;
+    let t = newList.splice(index, 1);
+    this.setState({
+      terminalList: newList,
+      terminal: t
+    });
+  }
+
+  terminalOnChange = (e) => {
+    e.preventDefault();
+    let value = e.target.value;
+    if (!/[^a-zA-Z]/.test(value)) {
+      this.setState({
+        terminal: value.charAt(value.length - 1).toLowerCase()
+      });
+    }
   }
 
   render() {
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-
-    // Only show error after a field is touched.
-
-    const nonTerminals = isFieldTouched('nonTerminals') && getFieldError('nonTerminals');
-    const terminals = isFieldTouched('Terminals') && getFieldError('Terminals');
-
-
-    const userNameError = isFieldTouched('userName') && getFieldError('userName');
-    const passwordError = isFieldTouched('password') && getFieldError('password');
-
     return (
       <div>
-
         <Form onSubmit={this.handleSubmit}>
-
-          <h4>Allow empty sentences</h4>
-          <RadioGroup name="radiogroup" defaultValue={'Yes'}>
-            <Radio value={'Yes'}>Yes</Radio>
-            <Radio value={'No'}>No</Radio>
-          </RadioGroup>
           <FormItem>
-            <Row>
-              <Col md={5}>
-                <FormItem>
-                  {getFieldDecorator('nonTerminal', {
-                    rules: [{ validator: this.handleNonTerminal }],
-                  })(
-                    <Input
-                      prefix={<Icon type="pushpin-o" />}
-                      onChange={this.handleValueChange}
-                      placeholder="non-terminal" />
-                  )}
-                </FormItem>
+            <h4>Allow empty sentences</h4>
+            <RadioGroup name="radiogroup" defaultValue={'Yes'}>
+              <Radio value={'Yes'}>Yes</Radio>
+              <Radio value={'No'}>No</Radio>
+            </RadioGroup>
+            <Row style={{ minHeight: 90 }}>
+              <Col md={12}>
+                <Search
+                  prefix={<Icon type="tag-o" />}
+                  placeholder="non-terminal"
+                  enterButton="Add"
+                  style={{ width: 200, marginTop: 40 }}
+                  value={this.state.nonTerminal}
+                  onChange={this.nonTerminalOnChange}
+                  onSearch={this.addNonTerminal} />
               </Col>
-              <Col md={2}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  onClick={this.addNonTerminal}
-                  disabled={hasErrors(getFieldsError())}>
-                  Add
-                </Button>
-              </Col>
-              <Col md={5}>
+              <Col md={12}>
+                {
+                  this.state.nonTerminalList.length > 0 &&
+                  <h5>Non-Terminals:</h5>
+                }
                 {this.state.nonTerminalList.map((nt, index) =>
                   <Tag
                     key={index}
-                    color="magenta"
+                    color="red"
                     onClick={() => this.delNonTerminal(index)}
                     name={index}>
                     {nt}
                   </Tag>)}
               </Col>
-
-
             </Row>
-
-
+            <Row style={{ minHeight: 90 }}>
+              <Col md={12}>
+                <Search
+                  prefix={<Icon type="tag-o" />}
+                  placeholder="terminal"
+                  enterButton="Add"
+                  style={{ width: 200, marginTop: 40 }}
+                  value={this.state.terminal}
+                  onChange={this.terminalOnChange}
+                  onSearch={this.addTerminal} />
+              </Col>
+              <Col md={12}>
+                {
+                  this.state.terminalList.length > 0 &&
+                  <h5>Terminals:</h5>
+                }
+                {this.state.terminalList.map((t, index) =>
+                  <Tag
+                    key={index}
+                    color="green"
+                    onClick={() => this.delTerminal(index)}
+                    name={index}>
+                    {t}
+                  </Tag>)}
+              </Col>
+            </Row>
+            {
+              this.state.terminalList.length > 0 &&
+              this.state.nonTerminalList.length > 0 &&
+              <div>
+                <Row type="flex" justify="center" align="middle">
+                  <Col span={12}>
+                    <h4>Productions:</h4>
+                    <TextArea />
+                  </Col>
+                </Row>
+                <Row type="flex" justify="center" align="middle">
+                  <Col span={12}>
+                    <h4>Grammar:</h4>
+                    <TextArea
+                      disabled />
+                  </Col>
+                </Row>
+              </div>
+            }
           </FormItem>
-
         </Form>
-
-
-
-
-        {/* <Form layout="inline" onSubmit={this.handleSubmit}>
-          <FormItem
-            validateStatus={userNameError ? 'error' : ''}
-            help={userNameError || ''}
-          >
-            {getFieldDecorator('userName', {
-              rules: [{ required: true, message: 'Please input your username!' }],
-            })(
-              <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
-            )}
-          </FormItem>
-          <FormItem
-            validateStatus={passwordError ? 'error' : ''}
-            help={passwordError || ''}
-          >
-            {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
-            })(
-              <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
-            )}
-          </FormItem>
-          <FormItem>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={hasErrors(getFieldsError())}
-            >
-              Log in
-          </Button>
-          </FormItem>
-        </Form> */}
       </div >
     );
   }

@@ -17,29 +17,32 @@ class App extends Component {
 
           <Row>
             <Col>
-            <Card style={{ background: '#ECECEC', padding: '30px' }} title="Input" bordered={false}>
-              <GrammarForm />
-            </Card>
+              <Card style={{ background: '#ECECEC', padding: '30px' }} title="Input" bordered={false}>
+                <GrammarForm />
+              </Card>
             </Col>
           </Row>
 
-          <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
-            <Col span={8}>
-              <Card title="GLC GR Analyzer" bordered={false}>
-                <GlcGrAnalyzer />
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card title="Sentence Generator" bordered={false}>
-                <SentenceGenerator />
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card title="Validity Analyzer" bordered={false}>
-                <ValidityAnalyzer />
-              </Card>
-            </Col>
-          </Row>
+          <Card style={{ background: '#ECECEC', padding: '30px' }} title="Result" bordered={false}>
+            <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
+              <Col md={24} style={{padding: 10}}>
+                <Card title="GLC GR Analyzer" bordered={false}>
+                  <GlcGrAnalyzer />
+                </Card>
+              </Col>
+              <Col md={24} style={{padding: 10}}>
+                <Card title="Sentence Generator" bordered={false}>
+                  <SentenceGenerator />
+                </Card>
+              </Col>
+              <Col md={24} style={{padding: 10}}>
+                <Card title="Validity Analyzer" bordered={false}>
+                  <ValidityAnalyzer />
+                </Card>
+              </Col>
+            </Row>
+          </Card>
+
         </div>
 
         <div>
