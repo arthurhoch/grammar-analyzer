@@ -9,10 +9,10 @@ const { Search, TextArea } = Input;
 class InputForm extends Component {
 
   state = {
-    nonTerminal: '',
-    terminal: '',
-    nonTerminalList: [],
-    terminalList: [],
+    nonTerminal: 'A',
+    terminal: 'a',
+    nonTerminalList: ['A', 'B'],
+    terminalList: ['ab', 'b'],
     productionsList: [],
     production: {
       nonTerminal: '',
@@ -121,6 +121,8 @@ class InputForm extends Component {
     this.setState({
       productionsList: [...this.state.productionsList, { terminalsList: [] }]
     })
+
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   delProduction = (index) => {
@@ -132,6 +134,8 @@ class InputForm extends Component {
     this.setState({
       productionsList: productionsList
     });
+
+    this.props.handleProductionsChange(this.state.productionsList);
     console.log(this.state.productionsList);
   }
 
@@ -142,6 +146,8 @@ class InputForm extends Component {
     this.setState({
       productionsList: productionsList
     });
+
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   createNewTerminalProduction = (index) => {
@@ -151,6 +157,8 @@ class InputForm extends Component {
     this.setState({
       productionsList: productionsList
     });
+
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   onSentenceChange = (e, index, indexTerminal) => {
@@ -170,6 +178,8 @@ class InputForm extends Component {
         productionsList: productionsList
       });
     }
+
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   delSentence = (index, indexTerminal) => {
@@ -180,6 +190,8 @@ class InputForm extends Component {
     this.setState({
       productionsList: productions
     });
+
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   terminalProductionOnChange = (e) => {
@@ -188,7 +200,6 @@ class InputForm extends Component {
 
   render() {
     return (
-      <div>
         <Form onSubmit={this.handleSubmit}>
           <FormItem>
             <h4>Allow empty sentences</h4>
@@ -320,28 +331,10 @@ class InputForm extends Component {
 
                     </Row>
                   )}
-
-
-
-
-                <Row type="flex" justify="center" align="middle">
-                  <Col span={12}>
-                    <h4>Productions:</h4>
-                    <TextArea />
-                  </Col>
-                </Row>
-                <Row type="flex" justify="center" align="middle">
-                  <Col span={12}>
-                    <h4>Grammar:</h4>
-                    <TextArea
-                      disabled />
-                  </Col>
-                </Row>
               </div>
             }
           </FormItem>
         </Form>
-      </div >
     );
   }
 }
