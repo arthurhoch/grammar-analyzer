@@ -4,7 +4,7 @@ import { Button, Form, Icon, Input, Radio, Row, Col, Tag, Select } from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
-const { Search, TextArea } = Input;
+const { Search } = Input;
 
 class InputForm extends Component {
 

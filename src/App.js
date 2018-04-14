@@ -1,7 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import { Row, Col, Card } from 'antd'
-
 
 import GrammarForm from './modules/grammar-form/GrammarForm'
 
@@ -9,6 +8,7 @@ import GlcGrAnalyzer from './modules/helpers/glc-gr-analyzer/GlcGrAnalyzer'
 import SentenceGenerator from './modules/helpers/sentence-generator/SentenceGenerator'
 import ValidityAnalyzer from './modules/helpers/validity-analyzer/ValidityAnalyzer'
 import Productions from './modules/helpers/productions/Productions'
+import Grammar from './modules/helpers/grammar/Grammar'
 
 class App extends Component {
   state = {
@@ -33,6 +33,12 @@ class App extends Component {
           <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
             <Col md={12} offset={6} style={{ padding: 10 }}>
               <Productions productionsList={this.state.productions} />
+            </Col>
+          </Row>
+
+          <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
+            <Col md={12} offset={6} style={{ padding: 10 }}>
+              <Grammar productionsList={this.state.productions} />
             </Col>
           </Row>
 
