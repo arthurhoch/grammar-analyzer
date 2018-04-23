@@ -12,8 +12,14 @@ class InputForm extends Component {
     nonTerminal: 'A',
     terminal: 'a',
     nonTerminalList: ['A', 'B'],
-    terminalList: ['ab', 'b'],
-    productionsList: [],
+    terminalList: ['a', 'b'],
+    productionsList: [{
+      nonTerminal: 'A',
+      terminalsList: ['aA', 'bBb']
+    }, {
+      nonTerminal: 'B',
+      terminalsList: ['b']
+    }],
     production: {
       nonTerminal: '',
       terminalsList: []
@@ -22,6 +28,7 @@ class InputForm extends Component {
 
 
   componentDidMount() {
+    this.props.handleProductionsChange(this.state.productionsList);
   }
 
   handleSubmit = (e) => {

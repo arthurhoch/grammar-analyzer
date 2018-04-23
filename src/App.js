@@ -42,6 +42,12 @@ class App extends Component {
             </Col>
           </Row>
 
+          <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
+            <Col md={12} offset={6} style={{ padding: 10 }}>
+              <GlcGrAnalyzer productionsList={this.state.productions} />
+            </Col>
+          </Row>
+
           <Card style={{ background: '#ECECEC', padding: '30px' }} title="Result" bordered={false}>
             <Row style={{ background: '#ECECEC', padding: '30px' }} gutter={16}>
               <Col md={24} style={{ padding: 10 }}>
