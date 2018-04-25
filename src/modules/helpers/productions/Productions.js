@@ -28,7 +28,7 @@ export default class Productions extends Component {
 		};
 		return (
 			<Fragment>
-				<Card style={cardStyle}>
+				<Card style={cardStyle} title={<b>Generated productions</b>}>
 					P = {'{'}
 					<br />
 					{this.formatProductionList(this.props.productionsList)}

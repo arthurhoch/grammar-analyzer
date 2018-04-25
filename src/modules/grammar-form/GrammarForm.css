@@ -1,0 +1,15 @@
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.production-card {
+  margin-top: 10px;
+}
+
+.select-non-terminal {
+  width: 100%;
+}

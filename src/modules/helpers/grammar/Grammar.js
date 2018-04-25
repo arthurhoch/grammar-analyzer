@@ -33,7 +33,7 @@ export default class Productions extends Component {
 		};
 		return (
 			<Fragment>
-				<Card style={cardStyle}>
+				<Card style={cardStyle} title={<b>Generated grammar</b>}>
 					G = {'('}
 					{this.formatGrammar(this.props.productionsList)}
 					{')'}
