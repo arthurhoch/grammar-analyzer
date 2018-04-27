@@ -7,6 +7,7 @@ import GrammarForm from './modules/grammar-form/GrammarForm'
 import GlcGrAnalyzer from './modules/helpers/glc-gr-analyzer/GlcGrAnalyzer'
 import Productions from './modules/helpers/productions/Productions'
 import Grammar from './modules/helpers/grammar/Grammar'
+import SentenceGenerator from './modules/helpers/sentence-generator/SentenceGenerator'
 class App extends Component {
   state = {
     productions: []
@@ -33,6 +34,28 @@ class App extends Component {
                 </Col>
                 <Col md={24}>
                   <Grammar productionsList={this.state.productions} />
+                </Col>
+              </Row>
+            </Col>
+            <Col md={24}>
+              <Row>
+                <Col md={8}>
+                  <SentenceGenerator 
+                    productionsList={this.state.productions} 
+                    title="Generated sentence 1"
+                  />
+                </Col>
+                <Col md={8}>
+                  <SentenceGenerator 
+                    productionsList={this.state.productions} 
+                    title="Generated sentence 2"
+                  />
+                </Col>
+                <Col md={8}>
+                  <SentenceGenerator 
+                    productionsList={this.state.productions} 
+                    title="Generated sentence 3"
+                  />
                 </Col>
               </Row>
             </Col>

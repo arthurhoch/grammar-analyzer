@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Card } from 'antd';
 
-export default class Productions extends Component {
+export default class Grammar extends Component {
 
 	formatGrammar = (productionsList) => {
 		let allNonTerminals = [];

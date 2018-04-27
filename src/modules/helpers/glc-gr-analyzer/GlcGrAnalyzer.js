@@ -27,7 +27,7 @@ export default class GlcGrAnalyzer extends Component {
 
     if (isRegularGrammar) return 'Regular grammar'
     if (isContexFreeGrammar) return 'Contex free grammar'
-    return 'Invalid Grammar'
+    return 'Unrestricted Grammar'
 	};
 
 	render() {

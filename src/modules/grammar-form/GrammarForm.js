@@ -10,23 +10,16 @@ const { Search } = Input;
 class InputForm extends Component {
 
   state = {
-    nonTerminal: 'A',
-    terminal: 'a',
-    nonTerminalList: ['A', 'B'],
-    terminalList: ['a', 'b'],
-    productionsList: [{
-      nonTerminal: 'A',
-      terminalsList: ['aA', 'bBb']
-    }, {
-      nonTerminal: 'B',
-      terminalsList: ['b']
-    }],
+    nonTerminal: '',
+    terminal: '',
+    nonTerminalList: [],
+    terminalList: [],
+    productionsList: [],
     production: {
       nonTerminal: '',
       terminalsList: []
     }
   };
-
 
   componentDidMount() {
     this.props.handleProductionsChange(this.state.productionsList);
@@ -109,8 +102,6 @@ class InputForm extends Component {
     }
   }
 
-  //Other
-
   terminalListOnChange = (e) => {
     e.preventDefault();
     let value = e.target.value;
@@ -119,10 +110,6 @@ class InputForm extends Component {
         nonTerminal: value.charAt(value.length - 1).toUpperCase()
       });
     }
-  }
-
-  handleChange = (value) => {
-    console.log(`Selected: ${value}`);
   }
 
   createNewProduction = () => {
@@ -134,17 +121,13 @@ class InputForm extends Component {
   }
 
   delProduction = (index) => {
-    console.log(index);
     let productionsList = this.state.productionsList;
-    let a = productionsList.splice(index, 1);
-    console.log(a);
 
     this.setState({
       productionsList: productionsList
     });
 
     this.props.handleProductionsChange(this.state.productionsList);
-    console.log(this.state.productionsList);
   }
 
   setNonTerminalProduction = (value, options) => {
@@ -177,9 +160,7 @@ class InputForm extends Component {
     let containsNonTerminal = this.state.nonTerminalList.indexOf(char) > -1;
 
     if (!/[^a-zA-Z]/.test(value) && (containsTerminal || containsNonTerminal)) {
-      console.log(index, indexTerminal);
       let productionsList = this.state.productionsList;
-      console.log(productionsList[index]);
       productionsList[index].terminalsList[indexTerminal] = value;
 
       this.setState({
@@ -212,7 +193,7 @@ class InputForm extends Component {
         <FormItem>
           <Row>
             <Col md={12}>
-              <Card 
+              <Card
                 className="text-left"
                 title={<b>Non-terminals</b>}
                 extra={
@@ -242,7 +223,7 @@ class InputForm extends Component {
               </Card>
             </Col>
             <Col md={12}>
-              <Card 
+              <Card
                 className="text-left"
                 title={<b>Terminals</b>}
                 extra={
@@ -272,95 +253,86 @@ class InputForm extends Component {
               </Card>
             </Col>
           </Row>
-          {
-            this.state.terminalList.length > 0 &&
-            this.state.nonTerminalList.length > 0 &&
-            <Card 
-              className="text-left"
-              title={<b>Productions</b>}
-              extra={
-                <Button
-                  type="primary"
-                  onClick={this.createNewProduction}
-                >
-                  Add production
+          <Card
+            className="text-left"
+            title={<b>Productions</b>}
+            extra={
+              <Button
+                type="primary"
+                onClick={this.createNewProduction}
+              >
+                Add production
                 </Button>
-              }
-            >
-              {
-                this.state.productionsList.map((production, index) =>
-                  <Card 
-                    key={index} 
-                    className="production-card text-left"
-                    title={"Production " + (index + 1)}
-                    extra={
-                      <Fragment>
-                        <Button
-                          type="primary"
-                          onClick={() => this.createNewTerminalProduction(index)}>
-                          Add sentence
-                        </Button>
+            }
+          >
+            {this.state.productionsList.map((production, index) =>
+              <Card
+                key={index}
+                className="production-card text-left"
+                title={"Production " + (index + 1)}
+                extra={
+                  <Fragment>
+                    <Button
+                      type="primary"
+                      onClick={() => this.createNewTerminalProduction(index)}>
+                      Add sentence
+                      </Button>
+                    <Button
+                      type="danger"
+                      onClick={() => this.delProduction(index)}>
+                      Remove Production
+                      </Button>
+                  </Fragment>
+                }
+              >
+                <Col md={8}>
+                  <Select
+                    showSearch
+                    className="select-non-terminal"
+                    placeholder="Select a non-terminal"
+                    optionFilterProp="children"
+                    value={this.state.productionsList[index].nonTerminal}
+                    onSelect={this.setNonTerminalProduction}
+                    filterOption={(input, option) => option.props.children.toUpperCase().indexOf(input.toUpperCase()) >= 0}
+                  >
+                    {this.state.nonTerminalList.map((nt, indexNonterminal) =>
+                      <Option
+                        value={nt}
+                        row={index}
+                        key={indexNonterminal}
+                      >
+                        {nt}
+                      </Option>
+                    )}
+                  </Select>
+                </Col>
+                <Col md={2} className="text-center">
+                  <Icon type="arrow-right" style={{ fontSize: 20, marginTop: 5 }} />
+                </Col>
+                <Col md={12}>
+                  {this.state.productionsList[index].terminalsList.map((terminal, indexTerminal) =>
+                    <Row key={indexTerminal}>
+                      <Col md={18}>
+                        <Input
+                          key={indexTerminal}
+                          value={this.state.productionsList[index].terminalsList[indexTerminal]}
+                          onChange={e => this.onSentenceChange(e, index, indexTerminal)}
+                          placeholder="Sentence"
+                        />
+                      </Col>
+                      <Col md={6}>
                         <Button
                           type="danger"
-                          onClick={() => this.delProduction(index)}>
-                          Remove Production
-                        </Button>
-                      </Fragment>
-                    } 
-                  >
-                    <Col md={8}>
-                      <Select
-                        showSearch
-                        className="select-non-terminal"
-                        placeholder="Select a non-terminal"
-                        optionFilterProp="children"
-                        value={this.state.productionsList[index].nonTerminal}
-                        onSelect={this.setNonTerminalProduction}
-                        filterOption={(input, option) => option.props.children.toUpperCase().indexOf(input.toUpperCase()) >= 0}
-                      >
-                        {
-                          this.state.nonTerminalList.map((nt, indexNonterminal) =>
-                            <Option
-                              value={nt}
-                              row={index}
-                              key={indexNonterminal}
-                            >
-                              {nt}
-                            </Option>
-                          )
-                        }
-                      </Select>
-                      
-                    </Col>
-                    <Col md={2} className="text-center">
-                      <Icon type="arrow-right" style={{ fontSize: 20, marginTop: 5 }} />
-                    </Col>
-                    <Col md={12}>
-                      { 
-                        this.state.productionsList[index].terminalsList.map((terminal, indexTerminal) =>
-                          <Row key={indexTerminal}>
-                            <Col md={18}>
-                              <Input
-                                key={indexTerminal}
-                                value={this.state.productionsList[index].terminalsList[indexTerminal]}
-                                onChange={e => this.onSentenceChange(e, index, indexTerminal)}
-                                placeholder="Sentence" 
-                              />
-                            </Col>
-                            <Col md={6}>
-                              <Button
-                                type="danger"
-                                onClick={() => this.delSentence(index, indexTerminal)}>
-                                Del sentence
-                              </Button>
-                            </Col>
-                          </Row>
-                        )}
-                    </Col>
-                  </Card>
-                )}
-            </Card>
-          }
+                          onClick={() => this.delSentence(index, indexTerminal)}>
+                          Del sentence
+                          </Button>
+                      </Col>
+                    </Row>
+                  )}
+                </Col>
+              </Card>
+            )}
+          </Card>
         </FormItem>
       </Form>
     );
