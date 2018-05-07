@@ -13,7 +13,10 @@ export default class Productions extends Component {
 				if (nonTerminal) {
 					return (
 						<span key={index} style={productionStyle}>
-							{nonTerminal} = {terminalsList.join(terminalsList[index] && ' | ')}<br />
+							{nonTerminal} = {terminalsList.map((terminalList, indexTerminal) => 
+								(terminalList === '' ? 'Σ' : terminalList) + (indexTerminal === terminalsList.length-1 ? ''  : ' | ')
+							)}
+							<br/>
 						</span>
 					);
 				}
@@ -32,7 +35,7 @@ export default class Productions extends Component {
 					P = {'{'}
 					<br />
 					{this.formatProductionList(this.props.productionsList)}
-					{'}'}
+					{' }'}
 				</Card>
 			</Fragment>
 		);

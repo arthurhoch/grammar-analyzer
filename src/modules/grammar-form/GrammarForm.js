@@ -12,26 +12,32 @@ class InputForm extends Component {
   state = {
     nonTerminal: '',
     terminal: '',
-    nonTerminalList: [],
-    terminalList: [],
-    productionsList: [],
+    nonTerminalList: ['S', 'X'],
+    terminalList: ['(', ')', '+', '*', '-', '/', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+    productionsList: [
+      {nonTerminal: 'S', terminalsList: ['(S)', 'S+S', 'S*S', 'X']},
+      {nonTerminal: 'X', terminalsList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'XX']}
+    ],
     production: {
       nonTerminal: '',
       terminalsList: []
     }
   };
 
+  // state = {
+  //   nonTerminal: '',
+  //   terminal: '',
+  //   nonTerminalList: ['S', 'A', 'B'],
+  //   terminalList: ['a', 'b'],
+  //   productionsList: [{nonTerminal: 'S', terminalsList: ['abA']}, {nonTerminal: 'A', terminalsList: ['aA', 'bA', 'B']}, {nonTerminal: 'B', terminalsList: ['ba']}],
+  //   production: {
+  //     nonTerminal: '',
+  //     terminalsList: []
+  //   }
+  // };
+
   componentDidMount() {
     this.props.handleProductionsChange(this.state.productionsList);
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log(values);
-      }
-    });
   }
 
   //NonTerminal
@@ -95,7 +101,7 @@ class InputForm extends Component {
   terminalOnChange = (e) => {
     e.preventDefault();
     let value = e.target.value;
-    if (!/[^a-zA-Z]/.test(value)) {
+    if (!/[A-Z]/.test(value)) {
       this.setState({
         terminal: value.charAt(value.length - 1).toLowerCase()
       });
@@ -121,14 +127,13 @@ class InputForm extends Component {
   }
 
   delProduction = (index) => {
-    let productionsList = this.state.productionsList;
-
-    this.setState({
-      productionsList: productionsList
-    });
-
-    this.props.handleProductionsChange(this.state.productionsList);
-  }
+      let productionsList = this.state.productionsList;
+      let a = productionsList.splice(index, 1);
+  
+      this.setState({
+        productionsList: productionsList
+      });
+    }
 
   setNonTerminalProduction = (value, options) => {
     let row = options.props.row;
@@ -189,7 +194,7 @@ class InputForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form>
         <FormItem>
           <Row>
             <Col md={12}>
@@ -262,7 +267,7 @@ class InputForm extends Component {
                 onClick={this.createNewProduction}
               >
                 Add production
-                </Button>
+              </Button>
             }
           >
             {this.state.productionsList.map((production, index) =>

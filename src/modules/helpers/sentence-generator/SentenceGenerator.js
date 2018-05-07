@@ -1,12 +1,26 @@
 import React, { Component, Fragment } from 'react';
-import { Card } from 'antd';
+import { Card, Input, Button, Row, Col } from 'antd';
+
+const { Search } = Input;
 
 export default class SentenceGenerator extends Component {
+
+  state = {
+    timeout: 20,
+    sentence: ''
+  }
+
+  componentDidMount() {
+    //this.props.generateAnotherSentence();
+    setTimeout(() => {
+      this.generateAnotherSentence();  
+    }, 500);
+  }
 
 	generateSentence = (productionsList) => {
     const firstProduction = this.getRandomFirstProduction(productionsList);
     if (firstProduction) {
-      return this.generate(firstProduction, productionsList, 'S -> ' + firstProduction, 20);
+      return this.generate(firstProduction, productionsList, 'S -> ' + firstProduction, this.state.timeout);
     }
   };
 
@@ -17,7 +31,7 @@ export default class SentenceGenerator extends Component {
     const productionSplited = production.split('');
     let someNtEmpty = null;
     productionSplited.forEach((nt, index) => {
-      if (nt === nt.toUpperCase()) {
+      if (/[A-Z]/.test(nt)) {
         let newProductionFromNt = this.getRandomProductionFromNt(productionsList, nt)
         if (!newProductionFromNt) {
           return someNtEmpty = nt;
@@ -31,7 +45,7 @@ export default class SentenceGenerator extends Component {
     const newProduction = productionSplited.join('');
     sentence += ' -> ' + newProduction;
 
-    if (this.haveTerminalsInProduction(newProduction)) {
+    if (this.haveNonTerminalsInProduction(newProduction)) {
       return this.generate(newProduction, productionsList, sentence, timout, count);
     } else {
       return sentence;
@@ -45,12 +59,16 @@ export default class SentenceGenerator extends Component {
     }
   }
   
-  haveTerminalsInProduction = (production) => {
-    const productionSplited = production.split('');
-    const nts = productionSplited.filter(value => value === value.toUpperCase);
-    
-    return nts && nts.length > 0 ? true : false;
+  haveNonTerminalsInProduction = (production) => {
+    return /[A-Z]/.test(production);
   } 
+
+  isSpecialCharacter = (str) => {
+    if (typeof str === 'string' || str instanceof String)
+      return false;
+    else
+      return true
+  };
 
   getRandomProductionFromNt = (productionsList, nt) => {
     const productionListFromNt = this.getProductionListFromNt(productionsList, nt);
@@ -67,14 +85,41 @@ export default class SentenceGenerator extends Component {
     if (productions && productions.length > 0) return productions[0].terminalsList;
   }
 
+  handleTimeoutChange = (e) => {
+    e.preventDefault();
+    const value = e.target.value;
+    this.setState({ timeout: value });
+    this.generateAnotherSentence();
+  }
+
+  generateAnotherSentence = () => {
+    this.setState({
+      sentence: this.generateSentence(this.props.productionsList)
+    });
+  }
+
 	render() {
 		const cardStyle = {
 			textAlign: 'left',
-		};
+    };
 		return (
 			<Fragment>
-				<Card style={cardStyle} title={<b>{this.props.title || 'Sentence'}</b>}>
-					{this.generateSentence(this.props.productionsList)}
+        <Card 
+          title={<b>{this.props.title || 'Sentence'}</b>}
+          extra={
+            <Fragment>
+              <Search
+                placeholder="Timeout treshold"
+                enterButton="Generate another"
+                value={this.state.timeout}
+                onChange={e => this.handleTimeoutChange(e)}
+                onSearch={this.generateAnotherSentence} 
+              />
+            </Fragment>
+
+          }
+        >
+					{this.state.sentence}
 				</Card>
 			</Fragment>
 		);
