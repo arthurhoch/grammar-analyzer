@@ -128,7 +128,7 @@ class InputForm extends Component {
 
   delProduction = (index) => {
       let productionsList = this.state.productionsList;
-      let a = productionsList.splice(index, 1);
+      productionsList.splice(index, 1);
   
       this.setState({
         productionsList: productionsList

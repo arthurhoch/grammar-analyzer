@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Card, Input, Button, Row, Col } from 'antd';
+import { Card, Input } from 'antd';
 
 const { Search } = Input;
 
@@ -99,9 +99,6 @@ export default class SentenceGenerator extends Component {
   }
 
 	render() {
-		const cardStyle = {
-			textAlign: 'left',
-    };
 		return (
 			<Fragment>
         <Card 
