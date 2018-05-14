@@ -3,31 +3,36 @@ import { Card } from 'antd';
 
 export default class GlcGrAnalyzer extends Component {
 
-  analyze = (productionsList) => {
-    let isRegularGrammar = false;
-    let isContexFreeGrammar = false;
-    
+	analyze = (productionsList) => {
+		let isRegularGrammar = false;
+		let isContexFreeGrammar = false;
+
 		productionsList && productionsList.forEach(
 			({ nonTerminal, terminalsList }) => {
 				if (nonTerminal && terminalsList) {
 
-          terminalsList.forEach((terminal) => {
-            if (((/^[a-z]?[A-Z]?[0-9]?$/.test(terminal) || /[!"#$%&'()*+.\/:;<=>?@\[\\\]^_`{|}~-]/.test(terminal) ) &&  !/^[A-Z]?$/.test(terminal)) || terminal === '') {
-              if (!isContexFreeGrammar) {
-                isRegularGrammar = true;
-              }
-            } else {
-              isContexFreeGrammar = true;
-              isRegularGrammar = false;
-            }
-          });
+					terminalsList.forEach((terminal) => {
+						if (((/^[a-z]?[A-Z]?[0-9]/.test(terminal) || /[!"#$%&'()*+.\/:;<=>?@\[\\\]^_`{|}~-]/.test(terminal)) && !/^[A-Z]?$/.test(terminal)) || terminal === '') {
+							if (!isContexFreeGrammar) {
+								isRegularGrammar = true;
+							}
+						} else {
+							isContexFreeGrammar = true;
+							isRegularGrammar = false;
+						}
+
+						if (terminal === undefined || terminal === null || terminal === '') {
+							isRegularGrammar = false;
+							isContexFreeGrammar = false;
+						}
+					});
 				}
 			}
-    );
+		);
 
-    if (isRegularGrammar) return 'Regular grammar'
-    if (isContexFreeGrammar) return 'Contex free grammar'
-    return 'Unrestricted Grammar'
+		if (isRegularGrammar) return 'Regular grammar'
+		if (isContexFreeGrammar) return 'Contex free grammar'
+		return 'Unrestricted Grammar'
 	};
 
 	render() {
