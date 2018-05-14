@@ -111,7 +111,7 @@ class InputForm extends Component {
   terminalListOnChange = (e) => {
     e.preventDefault();
     let value = e.target.value;
-    if (!/[^a-zA-Z]/.test(value)) {
+    if (!/[A-Z]/.test(value)) {
       this.setState({
         nonTerminal: value.charAt(value.length - 1).toUpperCase()
       });
@@ -164,7 +164,7 @@ class InputForm extends Component {
     let containsTerminal = this.state.terminalList.indexOf(char) > -1;
     let containsNonTerminal = this.state.nonTerminalList.indexOf(char) > -1;
 
-    if (!/[^a-zA-Z]/.test(value) && (containsTerminal || containsNonTerminal)) {
+    if (/[^$|^A-Z^a-z]/.test(value) || (containsTerminal || containsNonTerminal || value === '')) {
       let productionsList = this.state.productionsList;
       productionsList[index].terminalsList[indexTerminal] = value;
 
