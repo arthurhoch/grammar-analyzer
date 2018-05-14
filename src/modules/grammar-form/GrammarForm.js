@@ -164,7 +164,7 @@ class InputForm extends Component {
     let containsTerminal = this.state.terminalList.indexOf(char) > -1;
     let containsNonTerminal = this.state.nonTerminalList.indexOf(char) > -1;
 
-    if (/[^$|^A-Z^a-z]/.test(value) || (containsTerminal || containsNonTerminal || value === '')) {
+    if ((/[^$|^A-Z^a-z]/.test(value) || /[!"#$%&'()*+.\/:;<=>?@\[\\\]^_`{|}~-]?$/.test(value) ) && (containsTerminal || containsNonTerminal || value === '')) {
       let productionsList = this.state.productionsList;
       productionsList[index].terminalsList[indexTerminal] = value;
 

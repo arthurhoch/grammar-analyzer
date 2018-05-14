@@ -12,7 +12,7 @@ export default class GlcGrAnalyzer extends Component {
 				if (nonTerminal && terminalsList) {
 
           terminalsList.forEach((terminal) => {
-            if ((/^[a-z]?[A-Z]?$/.test(terminal) && !/^[A-Z]?$/.test(terminal)) || terminal === '') {
+            if (((/^[a-z]?[A-Z]?[0-9]?$/.test(terminal) || /[!"#$%&'()*+.\/:;<=>?@\[\\\]^_`{|}~-]/.test(terminal) ) &&  !/^[A-Z]?$/.test(terminal)) || terminal === '') {
               if (!isContexFreeGrammar) {
                 isRegularGrammar = true;
               }
